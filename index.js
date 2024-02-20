@@ -2,6 +2,10 @@ const { faker } = require('@faker-js/faker');
 
 const mysql = require('mysql2'); 
 
+const express = require('express');
+
+
+const app = express();
 const connection =  mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -10,7 +14,7 @@ const connection =  mysql.createConnection({
   });
 
   //Inserting New Data
-  let q = "INSERT INTO user (id,username,email,password) VALUES ?";
+  // let q = "INSERT INTO user (id,username,email,password) VALUES ?";
 //   let users =
 //   [["123", "123_newuser", 
 // "asb@gmail.com", "abc"],
@@ -20,28 +24,29 @@ const connection =  mysql.createConnection({
 // "asb@gmail.comc", "abcc"],
 // ["123d", "123_newuserd", 
 // "asb@gmail.comd", "abcd"]];
-let RandomUser = () => {
-  return [    
-     faker.string.uuid(),
-     faker.internet.userName(),
-     faker.internet.email(),
-     faker.internet.password(),
-    ];
-};
 
-let data = [];
-for(let i = 1; i <= 100; i++) {  
-  data.push(RandomUser());
-}
+// let RandomUser = () => {
+//   return [    
+//      faker.string.uuid(),
+//      faker.internet.userName(),
+//      faker.internet.email(),
+//      faker.internet.password(),
+//     ];
+// };
 
-try{
-  connection.query(q, [data], (err, result) => {
-      if(err) throw err;
-      console.log(result);
-    });    
-} catch(err) {
-  console.log(err);
-}
+// let data = [];
+// for(let i = 1; i <= 100; i++) {  
+//   data.push(RandomUser());
+// }
+
+// try{
+//   connection.query(q, [data], (err, result) => {
+//       if(err) throw err;
+//       console.log(result);
+//     });    
+// } catch(err) {
+//   console.log(err);
+// }
 
 // try{
 //     connection.query("SHOW TABLES", (err, result) => {
@@ -52,7 +57,30 @@ try{
 //     console.log(err);
 // }
 
-connection.end();
+// connection.end();
+
+app.listen(8080, (req,res) => {
+  console.log(`port is listening `);
+});
+
+app.use("/", (req,res) => {
+
+  let q =`SELECT count(*) FROM user`;
+  try{
+      connection.query(q, (err, result) => {
+          if(err) throw err;
+          console.log(result[0]["count(*)"]);
+          res.send("success");
+         
+
+        });    
+    } catch(err) {
+      console.log(err);
+      res.send("Some error in DB");
+    }
+});
+
+
 
 
 
